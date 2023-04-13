@@ -26,7 +26,20 @@ it('should be able to create a tweet', function(){
 
 });
 
-todo('should make sure that only authenticated users can tweet');
+it('should make sure that only authenticated users can tweet', function(){
+    livewire(Create::class)
+        ->set('body', 'This is my first tweet')
+        ->call('tweet')
+        ->assertForbidden();        
+
+    actingAs(User::factory()->create());
+
+    livewire(Create::class)
+        ->set('body', 'This is my first tweet')
+        ->call('tweet')
+        ->assertEmitted('tweet::created');
+});
+
 todo('body is required');
 todo('the tweet body should be have a max length of 140 characters');
 todo('should show the tweet on the timeline');
